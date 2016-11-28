@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import argparse
 import csv
+import humanfriendly as hf
 
 from io import StringIO
 
@@ -42,7 +43,7 @@ def write(data, outfile, limit):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--outfile", required=True)
-    parser.add_argument("-l", "--limit", required=True, type=float)
+    parser.add_argument("-l", "--limit", required=True)
     parser.add_argument("infile")
 
     h = parser.add_mutually_exclusive_group()
@@ -51,8 +52,12 @@ def main():
     parser.set_defaults(headers=False)
 
     args = parser.parse_args()
+    try:
+        limit = float(args.limit)
+    except ValueError:
+        limit = hf.parse_size(args.limit)
     data = read(args.infile, args.headers)
-    write(data, args.outfile, args.limit)
+    write(data, args.outfile, limit)
 
 
 if __name__ == "__main__":
