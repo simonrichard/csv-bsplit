@@ -3,8 +3,16 @@ import argparse
 import csv
 import humanfriendly as hf
 import os
+import sys
 
 from io import StringIO
+
+_bytes = bytes
+if sys.version_info[0] == 2:
+    from io import BytesIO as StringIO
+
+    def _bytes(string, _):
+        return string
 
 
 def read(infile, headers):
@@ -32,7 +40,7 @@ def write(data, outfile, limit):
     for doc in docs:
         with StringIO() as mock:
             csv.writer(mock).writerow(doc)
-            size = len(bytes(mock.getvalue(), "utf-8"))
+            size = len(_bytes(mock.getvalue(), "utf-8"))
         if f.tell() + size > limit:
             f.close()
             i += 1
