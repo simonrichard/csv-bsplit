@@ -2,6 +2,7 @@
 import argparse
 import csv
 import humanfriendly as hf
+import os
 
 from io import StringIO
 
@@ -15,7 +16,8 @@ def read(infile, headers):
 
 
 def file(outfile, headers, i):
-    f = open(outfile.format(i), "x")
+    f = os.open(outfile.format(i), os.O_WRONLY | os.O_CREAT | os.O_EXCL)
+    f = os.fdopen(f, "w")
     writer = csv.writer(f)
     if headers:
         writer.writerow(headers)
