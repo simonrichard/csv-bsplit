@@ -6,8 +6,8 @@ import humanfriendly as hf
 from io import StringIO
 
 
-def read(infile, headers):
-    f = open(infile)
+def read(infile, encoding, headers):
+    f = open(infile, encoding=encoding)
     reader = csv.reader(f)
     if headers:
         headers = next(reader)
@@ -44,6 +44,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("-o", "--outfile", required=True)
     parser.add_argument("-l", "--limit", required=True)
+    parser.add_argument("-e", "--encoding", required=False, default="utf-8")
     parser.add_argument("infile")
 
     h = parser.add_mutually_exclusive_group()
@@ -56,7 +57,7 @@ def main():
         limit = float(args.limit)
     except ValueError:
         limit = hf.parse_size(args.limit)
-    data = read(args.infile, args.headers)
+    data = read(args.infile, args.encoding, args.headers)
     write(data, args.outfile, limit)
 
 
